@@ -1,25 +1,44 @@
 import React from 'react';
-import logo from '../../assets/img/logo.svg';
-import Greetings from '../../containers/Greetings/Greetings';
+import { useState, useEffect } from 'react';
+import secrets from '../../../secrets';
+import { createClient } from '@supabase/supabase-js';
 import './Popup.css';
+import Home from './components/Home';
+import SignIn from './components/SignIn';
+import logo from '../../assets/img/itwo_logo.png';
 
 const Popup = () => {
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  const supabase = createClient(
+    secrets.SUPABASE_URL,
+    secrets.SUPABASE_KEY
+  );
+
+  useEffect(() => {
+    supabase.auth.getSession().then(
+      ({ data }) => {
+        if (data.session) {
+          setIsSignedIn(true);
+          console.log(data)
+        } else {
+          console.log('Not signed in');
+          console.log(data)
+          setIsSignedIn(false);
+        }
+      }
+    );
+  }, [])
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/pages/Popup/Popup.jsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React!
-        </a>
+        <img className="signin-logo" src={logo} alt="logo" />
+        {isSignedIn && <button className='simple-btn' onClick={async () => { await supabase.auth.signOut(); setIsSignedIn(false); }}>Sign Out</button>}
       </header>
+      <section className="App-body">
+        {isSignedIn ? <Home supabase={supabase} setIsSignedIn={setIsSignedIn} /> : <SignIn supabase={supabase} setIsSignedIn={setIsSignedIn} />}
+      </section>
     </div>
   );
 };

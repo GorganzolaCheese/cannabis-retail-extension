@@ -5,41 +5,100 @@
   left: 0px;
   right: 0px;
   text-align: center;
-  height: 100%;
-  padding: 10px;
-  background-color: #282c34;
+  height: 500px;
+  background-color: #FFFFFF;
 }
 
-.App-logo {
-  height: 30vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  height: 100%;
+.App-body {
+  padding: 20px;
+  height: calc(100% - 30px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: #329044;
 }
 
-.App-link {
-  color: #61dafb;
+.App-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 2px solid #329044;
+  height: 30px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.signin-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  p {
+    margin: 20px 0px;
   }
-  to {
-    transform: rotate(360deg);
+}
+
+.signin-logo {
+  max-width: 100px;
+  height: auto;
+  margin-bottom: 0px;
+}
+
+button:not(.simple-btn) {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background-color: #CDFF51;
+  color: #329044;
+  font-size: 20px;
+  border-radius: 30px;
+  padding: 15px 10px;
+  cursor: pointer;
+  min-width: 200px;
+  font-weight: 600;
+  transition: 0.2s all ease-in-out;
+
+  &:hover {
+    background-color: #329044;
+    color: white;
+    transform: scale(1.1);
   }
+}
+
+.simple-btn {
+  border: none;
+  background-color: transparent;
+  color: #329044;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: 0.2s all ease-in-out;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+input {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #329044;
+  outline: none;
+  margin: 10px;
+  width: 350px;
+  margin-bottom: 20px;
+}
+
+.signin-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-message {
+  color: red;
+  padding: 0;
+  margin: 0 0 5px !important;
 }
