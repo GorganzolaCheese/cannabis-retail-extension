@@ -1,10 +1,11 @@
-import React from 'react';
 import { useState, useEffect } from 'react';
 
-const UserSettings = ({ supabase }) => {
+const UserSettings = ({ supabase, userSettings, setIsSignedIn }) => {
     return (
-        <div>User Settings</div>
+        <>
+            <h1>User Settings</h1>
+        </>
     )
-};
+}
 
-export default UserSettings;
+export default UserSettings

@@ -1,12 +1,17 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import ProductInfoUpload from './ProductInfoUpload';
 import UserSettings from './UserSettings';
+import Stores from './Stores';
 
 const Home = ({ supabase, setIsSignedIn }) => {
 
     const [user, setUser] = useState(null);
     const [userSettings, setUserSettings] = useState(null);
-    const [showSettings, setShowSettings] = useState(false);
+    const [showProductInfoUpload, setShowProductInfoUpload] = useState(false);
+    const [showUserSettings, setShowSettings] = useState(false);
+    const [showStores, setShowStores] = useState(false);
+    const [showMenu, setShowMenu] = useState(true);
 
     useEffect(() => {
         supabase.auth.getSession().then(
@@ -22,7 +27,6 @@ const Home = ({ supabase, setIsSignedIn }) => {
                             if (error) {
                                 console.log(error);
                                 if (error.details && error.details == "The result contains 0 rows") {
-                                    setShowSettings(true);
                                     return
                                 }
 
@@ -38,10 +42,28 @@ const Home = ({ supabase, setIsSignedIn }) => {
         )
     }, [])
 
+    const returnToMenu = () => {
+        setShowProductInfoUpload(false);
+        setShowSettings(false);
+        setShowStores(false);
+        setShowMenu(true);
+    }
+
     return (
         <div className='home'>
-            {!showSettings && <h1>Welcome {user?.email}</h1>}
-            {showSettings && <UserSettings supabase={supabase} setIsSignedIn={setIsSignedIn} />}
+            {showMenu &&
+                <>
+                    <h1>Menu</h1>
+                    <div className='menu'>
+                        <button onClick={() => { setShowProductInfoUpload(true); setShowMenu(false) }}>Product Info Upload</button>
+                        <button onClick={() => { setShowStores(true); setShowMenu(false) }}>Stores</button>
+                        <button onClick={() => { setShowUserSettings(true); setShowMenu(false) }}>User Settings</button>
+                    </div>
+                </>
+            }
+            {showProductInfoUpload && <ProductInfoUpload supabase={supabase} userSettings={userSettings} setIsSignedIn={setIsSignedIn} returnToMenu={returnToMenu} />}
+            {showUserSettings && <UserSettings supabase={supabase} userSettings={userSettings} setIsSignedIn={setIsSignedIn} returnToMenu={returnToMenu} />}
+            {showStores && <Stores supabase={supabase} userSettings={userSettings} setIsSignedIn={setIsSignedIn} returnToMenu={returnToMenu} />}
         </div>
     );
 };

@@ -1,0 +1,17 @@
+.header {
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100vw;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px;
+
+    .btn {
+        padding: 10px;
+        color: black;
+        cursor: pointer;
+    }
+}
