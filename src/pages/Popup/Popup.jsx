@@ -32,10 +32,6 @@ const Popup = () => {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img className="signin-logo" src={logo} alt="logo" />
-        {isSignedIn && <button className='simple-btn' onClick={async () => { await supabase.auth.signOut(); setIsSignedIn(false); }}>Sign Out</button>}
-      </header>
       <section className="App-body">
         {isSignedIn ? <Home supabase={supabase} setIsSignedIn={setIsSignedIn} /> : <SignIn supabase={supabase} setIsSignedIn={setIsSignedIn} />}
       </section>

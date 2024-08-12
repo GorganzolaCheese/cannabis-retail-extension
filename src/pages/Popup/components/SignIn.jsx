@@ -1,9 +1,10 @@
 import React from "react";
 import { useState } from "react";
+import logo from '../../../assets/img/itwo_logo.png';
 
 const SignIn = ({ setIsSignedIn, supabase }) => {
 
-    const [showSignIn, setShowSignIn] = useState(false);
+    const [showSignIn, setShowSignIn] = useState(true);
     const [showSignUp, setShowSignUp] = useState(false);
 
     const [email, setEmail] = useState('');
@@ -80,7 +81,9 @@ const SignIn = ({ setIsSignedIn, supabase }) => {
                 <p>Don't have an account?</p>
                 <button onClick={() => setShowSignUp(true)}>Sign Up</button>
             </>}
-            {(showSignIn || showSignUp) &&
+
+            {(showSignIn || showSignUp) && <>
+                <img className="signin-logo" src={logo} alt="logo" />
                 <div className="signin-form">
                     <input
                         type="email"
@@ -109,18 +112,18 @@ const SignIn = ({ setIsSignedIn, supabase }) => {
                         />
                     }
                     {error && <p className="error-message">{error}</p>}
-                    {showSignIn && <button onClick={handleSignIn}>Sign In</button>}
-                    {showSignUp && <button onClick={handleSignUp}>Sign Up</button>}
-                    {showSignIn && <>
-                        <p>Don't have an account?</p>
-                        <button className="simple-btn" onClick={() => { setShowSignUp(true); setShowSignIn(false); setError(''); setEmail(''); setPassword(''); }}>Sign Up</button>
-                    </>}
-                    {showSignUp && <>
-                        <p>Already have an account?</p>
-                        <button className="simple-btn" onClick={() => { setShowSignUp(false); setShowSignIn(true); setError(''); setEmail(''); setPassword(''); setConfirmPassword(''); }}>Sign In</button>
-                    </>}
+                    {showSignIn && <button className="mb-60" onClick={handleSignIn}>Sign In</button>}
+                    {showSignUp && <button className="mb-60" onClick={handleSignUp}>Sign Up</button>}
                 </div>
-            }
+                {showSignIn && <div className="flex j-sb swap-signin-type">
+                    <p>Don't have an account?</p>
+                    <button className="simple-btn" onClick={() => { setShowSignUp(true); setShowSignIn(false); setError(''); setEmail(''); setPassword(''); }}>Sign Up</button>
+                </div>}
+                {showSignUp && <div className="flex j-sb swap-signin-type">
+                    <p>Already have an account?</p>
+                    <button className="simple-btn" onClick={() => { setShowSignUp(false); setShowSignIn(true); setError(''); setEmail(''); setPassword(''); setConfirmPassword(''); }}>Sign In</button>
+                </div>}
+            </>}
         </div>
     )
 };
