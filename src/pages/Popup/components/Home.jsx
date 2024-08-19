@@ -39,7 +39,7 @@ const Home = ({ supabase, setIsSignedIn }) => {
                                             stores_ids: []
                                         })
                                         .then(({ data, error }) => {
-                                            if (error) {
+                                            if (error || data == null) {
                                                 console.log(error);
                                             } else {
                                                 console.log("USER SETTINGS!", data)
