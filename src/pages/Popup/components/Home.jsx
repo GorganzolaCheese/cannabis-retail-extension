@@ -20,6 +20,8 @@ const Home = ({ supabase, setIsSignedIn }) => {
             ({ data }) => {
                 if (data.session) {
                     setUser(data.session.user);
+                    console.log("DATA SESSION ", data.session)
+                    const userId = data.session.user.id;
                     supabase
                         .from('UserSettings')
                         .select('*')
@@ -33,7 +35,7 @@ const Home = ({ supabase, setIsSignedIn }) => {
                                     supabase
                                         .from('UserSettings')
                                         .insert({
-                                            user_id: data.session.user.id,
+                                            user_id: userId,
                                             stores_ids: []
                                         })
                                         .then(({ data, error }) => {
