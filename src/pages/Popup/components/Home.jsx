@@ -33,7 +33,7 @@ const Home = ({ supabase, setIsSignedIn }) => {
                                     supabase
                                         .from('UserSettings')
                                         .insert({
-                                            user_id: user.id,
+                                            user_id: data.session.user.id,
                                             stores_ids: []
                                         })
                                         .then(({ data, error }) => {

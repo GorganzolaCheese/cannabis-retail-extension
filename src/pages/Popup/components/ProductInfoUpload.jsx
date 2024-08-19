@@ -18,6 +18,7 @@ const ProductInfoUpload = ({ supabase, userSettings, openUserSettings, setSelect
     const [storeDropdownOpen, setStoreDropdownOpen] = useState(false);
     const [storesListLoaded, setStoresListLoaded] = useState(false);
     const [showUpload, setShowUpload] = useState(true);
+    const [productResults, setProductResults] = useState(null);
 
     useEffect(() => {
 
@@ -46,6 +47,26 @@ const ProductInfoUpload = ({ supabase, userSettings, openUserSettings, setSelect
             }
         })
     }, [])
+
+    useEffect(() => {
+        if (currentStore != null) {
+            console.log("CURRENT STORE: ", currentStore)
+            // Get product information for store and user_id
+            supabase.from('ProductInformation').select('*').eq('store_id', currentStore.slug).eq('user_id', userSettings.user_id).then(({ data, error }) => {
+                if (error) {
+                    console.log(error);
+                } else {
+                    if (data.length > 0) {
+                        console.log('PRODUCTS', data)
+                        setProductResults(data);
+                        setShowUpload(false);
+                    } else {
+                        setShowUpload(true);
+                    }
+                }
+            })
+        }
+    }, [currentStore])
 
     useEffect(() => {
         console.log(files)
@@ -149,7 +170,15 @@ const ProductInfoUpload = ({ supabase, userSettings, openUserSettings, setSelect
                     }
                 </div>}
                 {!showUpload && <div className='product-opportunities'>
-
+                    <div className='opportunities-wrapper'>
+                        <div className='opportunities-header'>Opportunities</div>
+                    </div>
+                    <div className='market-data-wrapper'>
+                        <div className='market-data-header'>Market Data</div>
+                    </div>
+                    <div className='available-deals-wrapper'>
+                        <div className='available-deals-header'>Available Deals</div>
+                    </div>
                 </div>}
             </div>
         </>
