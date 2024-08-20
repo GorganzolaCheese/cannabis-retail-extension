@@ -22,6 +22,7 @@ const Home = ({ supabase, setIsSignedIn }) => {
                     setUser(data.session.user);
                     console.log("DATA SESSION ", data.session)
                     const userId = data.session.user.id;
+                    const email = data.session.user.email;
                     supabase
                         .from('UserSettings')
                         .select('*')
@@ -36,17 +37,35 @@ const Home = ({ supabase, setIsSignedIn }) => {
                                         .from('UserSettings')
                                         .insert({
                                             user_id: userId,
-                                            stores_ids: []
+                                            stores_ids: [],
+                                            email: email,
+                                            name: "New User",
                                         })
-                                        .then(({ data, error }) => {
-                                            console.log('USER SETTINGS CREATED', data)
-                                            if (error) {
-                                                console.log(error);
-                                            } else {
-                                                console.log("USER SETTINGS!", data)
-                                                setUserSettings(data[0]);
-                                                setShowUserSettings(true);
+                                        .then((res) => {
+                                            if (res.error) {
+                                                console.log(res.error)
+                                                setIsSignedIn(false);
+                                                // SIGN OUT
+                                                supabase.auth.signOut();
+                                                return
                                             }
+                                            supabase.
+                                                from('UserSettings')
+                                                .select('*')
+                                                .eq('user_id', userId)
+                                                .single()
+                                                .then(({ data, error }) => {
+                                                    console.log("RECIEVED THIS DATA", data)
+                                                    if (error) {
+                                                        console.log(error);
+                                                        setIsSignedIn(false);
+                                                        // SIGN OUT
+                                                        supabase.auth.signOut();
+                                                    } else {
+                                                        setUserSettings(data);
+                                                        openUserSettings();
+                                                    }
+                                                })
                                         })
                                 }
 
