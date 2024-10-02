@@ -295,6 +295,12 @@ input {
   }
 }
 
+.store-item.empty {
+  padding: 10px;
+  text-align: center;
+  justify-content: center;
+}
+
 .store-item {
   display: flex;
   align-items: center;
@@ -509,7 +515,7 @@ input {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 400px;
+  height: 370px;
 
   .dropzone {
     border: 1px dashed #329044;
@@ -524,6 +530,29 @@ input {
     h3 {
       margin: 5px 0;
       font-weight: bolder;
+    }
+  }
+
+  .loading-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 150px;
+
+    .loading {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 5px solid #329044;
+      border-top-color: #CDFF51;
+      animation: rotate 1.5s linear infinite;
+    }
+
+    @keyframes rotate {
+      to {
+        transform: rotate(360deg);
+      }
     }
   }
 }
@@ -650,5 +679,155 @@ input {
     &:hover {
       box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.1);
     }
+  }
+}
+
+.product-opportunities {
+  height: 390px;
+  overflow-y: auto;
+  padding: 10px 0px;
+}
+
+.opportunities-wrapper {
+  background-color: #329044;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  margin: 20px;
+
+  &:hover {
+    background-color: #CDFF51;
+
+    .opportunities-count {
+      background-color: #329044;
+      color: #CDFF51;
+    }
+
+    .opportunities-header {
+      color: #329044;
+    }
+
+    .right-arrow {
+      border-left: 10px solid #329044;
+    }
+  }
+}
+
+.opportunities-count {
+  color: #329044;
+  background-color: #CDFF51;
+  font-weight: bold;
+  font-size: 1.2em;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 20px;
+  padding: 5px;
+  transition: 0.2s;
+}
+
+.opportunities-header {
+  font-size: 1.2em;
+  color: #eef3d9;
+  transition: 0.2s;
+}
+
+.right-arrow {
+  margin-left: auto;
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 10px solid rgba(0, 0, 0, 0.1);
+  margin-right: 10px;
+  transition: 0.2s;
+}
+
+.product-opportunities-header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  justify-content: space-between;
+
+  .opportunities-header {
+    margin-bottom: 0;
+    color: #329044;
+    font-weight: bold;
+  }
+}
+
+.back-btn {
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #eef3d9;
+  transition: 0.2s;
+  background-color: #329044;
+  border-radius: 20px;
+  transition: 0.2s;
+  width: max-content;
+  display: flex;
+  align-items: center;
+
+
+  &:hover {
+    background-color: #CDFF51;
+    color: #329044;
+
+    .left-arrow {
+      border-right: 10px solid #329044;
+    }
+  }
+
+  .left-arrow {
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10px solid rgba(0, 0, 0, 0.1);
+    margin-right: 20px;
+  }
+}
+
+.opportunities-list {}
+
+.opportunity-item {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+  .opportunity-name {
+    font-weight: bold;
+  }
+
+  .opportunity-price {
+    text-align: left;
+  }
+}
+
+.product-opportunities-footer {
+  display: flex;
+  justify-content: space-between;
+  background-color: #eef3d9;
+
+  .last-upload {
+    padding: 10px;
+    color: gray;
+    font-size: 0.6em;
+  }
+
+  .upload-btn-wrapper {
+    color: #CDFF51;
+    background-color: #329044;
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.8em;
   }
 }

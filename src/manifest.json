@@ -42,5 +42,9 @@
     "tabs",
     "activeTab",
     "scripting"
+  ],
+  "host_permissions": [
+    "https://hub.covasoftware.com/*",
+    "https://init-api-dev.neobi.io/*"
   ]
 }

@@ -8,7 +8,7 @@ import location from '../../../assets/img/location.svg';
 import cancel from '../../../assets/img/cancel.svg';
 import userSettingsImg from '../../../assets/img/user-settings.png';
 
-const Stores = ({ supabase, userSettings, setIsSignedIn, returnToMenu, openUserSettings, setShowProductInfoUpload, setSelectedStore }) => {
+const Stores = ({ supabase, userSettings, setIsSignedIn, returnToMenu, openUserSettings, setShowProductInfoUpload, setSelectedStore, setAllStores }) => {
 
     const [stores, setStores] = useState([]);
     const [selectedStores, setSelectedStores] = useState([]);
@@ -23,19 +23,34 @@ const Stores = ({ supabase, userSettings, setIsSignedIn, returnToMenu, openUserS
         minMatchCharLength: 3
     }
 
-    useEffect(() => {
-
+    const setupStores = async () => {
         console.log(userSettings)
 
-        // Get full store list
-        supabase.from('Stores').select('*').then(({ data, error }) => {
+        let allRows = [];
+        let from = 0;
+        let to = 999;
+        let batch;
+
+        do {
+            // Get full store list
+            const { data, error } = await supabase.from('Stores').select('*').range(from, to)
+
             if (error) {
-                console.log(error);
-            } else {
-                setStores(data);
-                setFuseSearch(new Fuse(data, fuseOptions));
+                console.error(error);
+                break;
             }
-        })
+
+            // Ensure `data` is an array, or use an empty array as fallback
+            batch = data || [];
+            allRows = [...allRows, ...batch];
+
+            from += 1000;
+            to += 1000;
+        } while (batch.length > 0)
+
+        setStores(allRows);
+        setFuseSearch(new Fuse(allRows, fuseOptions));
+
         // Get user store IDs
         supabase.from('UserSettings').select('stores_ids').eq('user_id', userSettings.user_id).single().then(({ data, error }) => {
             if (error) {
@@ -46,6 +61,10 @@ const Stores = ({ supabase, userSettings, setIsSignedIn, returnToMenu, openUserS
                 setSelectedStores(data.stores_ids);
             }
         })
+    }
+
+    useEffect(() => {
+        setupStores();
     }, [])
 
     const handleSearch = (e) => {
@@ -71,8 +90,9 @@ const Stores = ({ supabase, userSettings, setIsSignedIn, returnToMenu, openUserS
         })
     }
 
-    const setStoreAndOpenProductInfoUpload = (store_id) => {
+    const setStoreAndOpenProductInfoUpload = (store_id, allStores) => {
         setSelectedStore(store_id)
+        setAllStores(allStores)
         setShowProductInfoUpload(true)
     }
 
@@ -95,7 +115,7 @@ const Stores = ({ supabase, userSettings, setIsSignedIn, returnToMenu, openUserS
                                 return (
                                     <div className='store-item'>
                                         <img src={location} alt="location" className='location-img' onClick={() => setStoreAndOpenProductInfoUpload(storeId)} />
-                                        <li key={storeId} onClick={() => setStoreAndOpenProductInfoUpload(storeId)}>
+                                        <li key={storeId} onClick={() => setStoreAndOpenProductInfoUpload(storeId, stores)}>
                                             <b>{stores.find(store => store.id == storeId).name}</b><br></br>
                                             {stores.find(store => store.id == storeId).formatted_address}
                                         </li>

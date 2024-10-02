@@ -14,6 +14,7 @@ const Home = ({ supabase, setIsSignedIn }) => {
     const [showStores, setShowStores] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const [selectedStore, setSelectedStore] = useState(null);
+    const [allStores, setAllStores] = useState(null);
 
     useEffect(() => {
         supabase.auth.getSession().then(
@@ -125,9 +126,9 @@ const Home = ({ supabase, setIsSignedIn }) => {
                     </div>
                 </>
             }
-            {showProductInfoUpload && <ProductInfoUpload supabase={supabase} userSettings={userSettings} setIsSignedIn={setIsSignedIn} returnToMenu={returnToMenu} openUserSettings={openUserSettings} setSelectedStore={setSelectedStore} selectedStore={selectedStore} />}
+            {showProductInfoUpload && <ProductInfoUpload supabase={supabase} userSettings={userSettings} setIsSignedIn={setIsSignedIn} returnToMenu={returnToMenu} openUserSettings={openUserSettings} setSelectedStore={setSelectedStore} selectedStore={selectedStore} allStores={allStores} openStores={openStores} />}
             {showUserSettings && <UserSettings supabase={supabase} setUserSettings={setUserSettings} userSettings={userSettings} setIsSignedIn={setIsSignedIn} returnToMenu={returnToMenu} openStores={openStores} />}
-            {showStores && <Stores supabase={supabase} userSettings={userSettings} setIsSignedIn={setIsSignedIn} returnToMenu={returnToMenu} openUserSettings={openUserSettings} setShowProductInfoUpload={openProductInfoUpload} setSelectedStore={setSelectedStore} />}
+            {showStores && <Stores supabase={supabase} userSettings={userSettings} setIsSignedIn={setIsSignedIn} returnToMenu={returnToMenu} openUserSettings={openUserSettings} setShowProductInfoUpload={openProductInfoUpload} setSelectedStore={setSelectedStore} setAllStores={setAllStores} />}
         </div>
     );
 };
