@@ -517,6 +517,10 @@ input {
   justify-content: center;
   height: 370px;
 
+  &.loading {
+    height: 433px;
+  }
+
   .dropzone {
     border: 1px dashed #329044;
     padding: 20px 40px;

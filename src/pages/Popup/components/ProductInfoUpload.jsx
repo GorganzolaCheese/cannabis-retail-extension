@@ -336,7 +336,7 @@ const ProductInfoUpload = ({ supabase, userSettings, openUserSettings, setSelect
 
     const changeStore = (store) => {
         setCurrentStore(store)
-
+        setStoreDropdownOpen(false)
     }
 
     return (
@@ -376,7 +376,7 @@ const ProductInfoUpload = ({ supabase, userSettings, openUserSettings, setSelect
                         </div>
                     </div>
                 </div>}
-                {showUpload && <div className='dropzone-wrapper'>
+                {showUpload && <div className={`dropzone-wrapper ${!storesListLoaded ? 'loading' : ''}`}>
                     {files.length === 0 && !loading && <Dropzone onDrop={acceptedFiles => setFiles(acceptedFiles)}>
                         {({ getRootProps, getInputProps }) => (
                             <section className='dropzone'>
