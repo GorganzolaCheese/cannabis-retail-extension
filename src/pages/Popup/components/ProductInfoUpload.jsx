@@ -204,7 +204,7 @@ const ProductInfoUpload = ({ supabase, userSettings, openUserSettings, setSelect
                 ]
             }]
             console.log("REQUEST BODY", requestBody)
-            await fetch('https://init-api-dev.neobi.io/api/BrowserExtension/GetCompetitorPricing', {
+            await fetch('https://init-api-dev.neobi.io/api/RetailerExtension/GetCompetitorPricing', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
