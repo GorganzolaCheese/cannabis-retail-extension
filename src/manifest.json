@@ -16,10 +16,12 @@
   "content_scripts": [
     {
       "matches": [
-        "https://hub.covasoftware.com/*"
+        "<all_urls>"
       ],
       "js": [
-        "contentScript.bundle.js"
+        "contentScript.bundle.js",
+        "popup.html",
+        "content.styles.css"
       ],
       "css": [
         "content.styles.css"
