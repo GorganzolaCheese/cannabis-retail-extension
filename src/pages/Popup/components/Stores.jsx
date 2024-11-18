@@ -72,7 +72,11 @@ const Stores = ({ supabase, userSettings, setIsSignedIn, returnToMenu, openUserS
     }
 
     const handleAddStore = (store) => {
-        if (selectedStores.includes(store.id)) return
+        if (selectedStores.includes(store.id)) {
+            // Remove it from selected stores
+            setSelectedStores(selectedStores.filter(selectedStore => selectedStore != store.id))
+            return
+        }
         // Remove it from fuse search, temporarily
         setSelectedStores([...selectedStores, store.id])
     }
@@ -104,34 +108,26 @@ const Stores = ({ supabase, userSettings, setIsSignedIn, returnToMenu, openUserS
         <div className='stores-page'>
             <div className='stores-header'>
                 <img className="signin-logo" src={logo} alt="logo" />
-                <img onClick={() => openUserSettings()} className="user-settings-image" src={userSettingsImg} alt="logo" />
+                <div onClick={() => openUserSettings()} className="user-settings-image">Settings</div>
             </div>
             <div className='stores-inner'>
                 <div className={`your-stores ${showSetYourStores ? '' : ' open'}`}>
-                    <h2>Select Your Store</h2>
+                    {showSetYourStores && <div onClick={() => { setShowSetYourStores(false); saveStores() }} className='settings-close'>{"< BACK"}</div>}
+                    <h3 className='green-text page-header'>{showSetYourStores ? "Manage Locations" : "Location"}</h3>
                     <div className='your-stores-list'>
-                        {selectedStores.length > 0 && stores.length > 0 && <ul className='stores-list stores-list-selected'>
-                            {selectedStores.map((storeId) => {
-                                return (
-                                    <div className='store-item'>
-                                        <img src={location} alt="location" className='location-img' onClick={() => setStoreAndOpenProductInfoUpload(storeId)} />
-                                        <li key={storeId} onClick={() => setStoreAndOpenProductInfoUpload(storeId, stores)}>
-                                            <b>{stores.find(store => store.id == storeId).name}</b><br></br>
-                                            {stores.find(store => store.id == storeId).formatted_address}
-                                        </li>
-                                        <img src={cancel} alt="cancel" className='cancel-img' onClick={(e) => handleRemoveStore(storeId)} />
-                                    </div>
-                                )
-                            })}
-                        </ul>}
-                        {selectedStores.length == 0 && <p>No stores assigned to you</p>}
+                        {selectedStores.length > 0 && stores.length > 0 && !showSetYourStores &&
+                            <select onChange={(e) => { setStoreAndOpenProductInfoUpload(e.target.value, stores) }}>
+                                <option disabled selected>Select Your Location</option>
+                                {selectedStores.map((store_id) => {
+                                    return (<option value={store_id}>{stores.find(store => store.id == store_id).name}</option>)
+                                })}
+                            </select>
+                        }
+                        {selectedStores.length == 0 && !showSetYourStores && <button className='mb-15' onClick={() => setShowSetYourStores(true)}>+ Add Your First Location</button>}
                     </div>
                 </div>
                 <div className={`set-your-stores ${showSetYourStores ? ' open' : ''}`}>
-                    <div className='set-your-stores-header'>
-                        <h2>Add Store</h2>
-                        <div onClick={() => { setShowSetYourStores(false); saveStores() }} className='close-btn'></div>
-                    </div>
+                    <div className='search-container'><input type="text" onChange={(e) => handleSearch(e)} placeholder="Search Stores" /></div>
                     <ul className='stores-list stores-list-set'>
                         {fuseSearch && fuseSearch.search(storeSearch).map((store) => {
                             if (selectedStores.includes(store.id)) {
@@ -141,20 +137,27 @@ const Stores = ({ supabase, userSettings, setIsSignedIn, returnToMenu, openUserS
                             console.log(store)
                             return (
                                 <div className={'store-item' + (selectedStores.includes(store.item.id) ? ' selected' : '')} onClick={() => handleAddStore(store.item)}>
-                                    <div className='add-btn'></div>
                                     <li key={store.item.id}>
                                         <b>{store.item.name}</b><br></br>
-                                        {store.item.formatted_address}
+                                        <div className='address'>{store.item.formatted_address}</div>
                                     </li>
+                                    <div className='add-btn'></div>
                                 </div>
                             )
                         })}
                     </ul>
                     {stores.length == 0 && <p>No stores found</p>}
-                    <div className='search-container'><input type="text" onChange={(e) => handleSearch(e)} placeholder="Search Stores" /></div>
                 </div>
-                <div className='stores-footer'>
-                    <div className='add-stores-btn' onClick={() => { setShowSetYourStores(true) }}>Add Stores</div>
+                <div className='instructions'>
+                    <h3>Instructions</h3>
+                    <p>
+                        Vivamus sagittis lacus vel augue laoreet rutrum
+                        faucibus dolor auctor. Aenean eu leo quam.
+                        Pellentesque ornare sem lacinia quam venenatis
+                        vestibulum. Curabitur blandit tempus porttitor.
+                        Praesent commodo cursus magna, vel scelerisque
+                        nisl consectetur et.
+                    </p>
                 </div>
             </div>
         </div>

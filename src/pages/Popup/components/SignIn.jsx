@@ -84,12 +84,13 @@ const SignIn = ({ setIsSignedIn, supabase }) => {
 
             {(showSignIn || showSignUp) && <>
                 <img className="signin-logo" src={logo} alt="logo" />
+                <p className="signin-title">{showSignIn ? "Sign Into Your Account" : "Sign Up For An Account"}</p>
                 <div className="signin-form">
                     <input
                         type="email"
                         name="email"
                         id="email"
-                        placeholder="Email"
+                        placeholder="Email Address"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
@@ -112,8 +113,8 @@ const SignIn = ({ setIsSignedIn, supabase }) => {
                         />
                     }
                     {error && <p className="error-message">{error}</p>}
-                    {showSignIn && <button className="mb-60" onClick={handleSignIn}>Sign In</button>}
-                    {showSignUp && <button className="mb-60" onClick={handleSignUp}>Sign Up</button>}
+                    {showSignIn && <button className="mb-30" onClick={handleSignIn}>Sign In</button>}
+                    {showSignUp && <button className="mb-30" onClick={handleSignUp}>Sign Up</button>}
                 </div>
                 {showSignIn && <div className="flex j-sb swap-signin-type">
                     <p>Don't have an account?</p>

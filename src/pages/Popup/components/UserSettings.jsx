@@ -47,35 +47,27 @@ const UserSettings = ({ supabase, userSettings, setIsSignedIn, openStores, setUs
 
     return (
         <div className='user-settings'>
-            <div className='stores-header'>
-                <img className="signin-logo" src={logo} alt="logo" />
-            </div>
+            <img className="signin-logo" src={logo} alt="logo" />
             <div className='user-settings-body'>
-                <div className='user-settings-body-top'>
-                    <h3>User Settings</h3>
-                    <div className='close-btn' onClick={() => openStores()}></div>
-                </div>
+                <div className='settings-close' onClick={() => openStores()}>{"< BACK"}</div>
+                <h3 className='green-text page-header'>User Settings</h3>
                 <div className='user-settings-body-bottom'>
                     <div className='settings-header'>
                         Retail Brand
                     </div>
-                    {!editSettings && <p className='settings-brand'>{userSettings.retail_brand !== null ? userSettings.retail_brand : 'N/A'}</p>}
+                    {!editSettings && <input type="text" value={retailBrand} disabled />}
                     {editSettings && <input type="text" value={retailBrand} onChange={(e) => { setRetailBrand(e.target.value) }} />}
+                    <button className='change-password-btn mb-30' onClick={() => { openStores() }}>Manage Locations ({userSettings.stores_ids !== null ? userSettings.stores_ids.length : 0})</button>
                     <div className='settings-header'>
-                        User Information
+                        Name
                     </div>
-                    {!editSettings && <p className='settings-name'>{userSettings.name !== null ? userSettings.name : 'N/A'}</p>}
+                    {!editSettings && <input type="text" value={name} disabled />}
                     {editSettings && <input type="text" value={name} onChange={(e) => { setName(e.target.value) }} />}
-                    <p className='settings-email'>{userSettings.email !== null ? userSettings.email : 'N/A'}</p>
                     {userSettings.is_admin && <div className='admin-box'>Brand Admin</div>}
-                    {!editSettings && <div className='change-password-btn' onClick={() => { }}>Change Password</div>}
-                    {editSettings && <div className='change-password-btn' onClick={() => { saveUserSettings() }}>Save Changes</div>}
-                    <div className='actions-bar-wrapper'>
-                        <div className='actions-bar'>
-                            <div className='edit-btn' onClick={() => { setEditSettings(!editSettings); setRetailBrand(userSettings.retail_brand); setName(userSettings.name); setEmail(userSettings.email); }}>Edit User Settings</div>
-                            <div className='sign-out-btn' onClick={() => { setIsSignedIn(false) }}>Sign Out</div>
-                        </div>
-                    </div>
+                    {!editSettings && <button className='change-password-btn mb-10' onClick={() => { }}>Change Password</button>}
+                    {editSettings && <button className='change-password-btn mb-10' onClick={() => { saveUserSettings() }}>Save Changes</button>}
+                    <button className='edit-btn mb-15 light-bg' onClick={() => { setEditSettings(!editSettings); setRetailBrand(userSettings.retail_brand); setName(userSettings.name); setEmail(userSettings.email); }}>Edit User Settings</button>
+                    <button className='sign-out-btn light-bg' onClick={() => { setIsSignedIn(false) }}>Sign Out</button>
                 </div>
             </div>
         </div>

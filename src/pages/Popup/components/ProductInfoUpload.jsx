@@ -108,9 +108,11 @@ const ProductInfoUpload = ({ supabase, userSettings, openUserSettings, setSelect
                     setProductResults(data);
                     setShowUpload(false);
                     setLoading(false);
+                    setShowOpportunities(true);
                 } else {
                     setShowUpload(true);
                     setLoading(false);
+                    setShowOpportunities(false);
                 }
             }
         })
@@ -220,7 +222,6 @@ const ProductInfoUpload = ({ supabase, userSettings, openUserSettings, setSelect
                     processCount++;
                     if (processCount == productInformation.length) {
                         loadProductInformation();
-                        setShowUpload(false);
                         setLoading(false);
                     }
                 })
@@ -229,7 +230,6 @@ const ProductInfoUpload = ({ supabase, userSettings, openUserSettings, setSelect
                     processCount++;
                     if (processCount == productInformation.length) {
                         loadProductInformation();
-                        setShowUpload(false);
                         setLoading(false);
                     }
                 })
@@ -334,9 +334,25 @@ const ProductInfoUpload = ({ supabase, userSettings, openUserSettings, setSelect
         ]
     */
 
-    const changeStore = (store) => {
+    const changeStore = (store_id) => {
+
+        const store = stores.find(store => store.id == store_id)
+
         setCurrentStore(store)
         setStoreDropdownOpen(false)
+    }
+
+    const removeStore = (store_id) => {
+        setSelectedStores(selectedStores.filter(store => store != store_id))
+
+        supabase.from("UserSettings")
+            .update({ stores_ids: selectedStores.filter(store => store != store_id) })
+            .eq('user_id', userSettings.user_id)
+            .then(({ data, error }) => {
+                if (error) {
+                    console.log(error)
+                }
+            })
     }
 
     return (
@@ -344,93 +360,61 @@ const ProductInfoUpload = ({ supabase, userSettings, openUserSettings, setSelect
             <div className='upload-page'>
                 <div className='stores-header'>
                     <img className="signin-logo" src={logo} alt="logo" />
-                    <img onClick={() => openUserSettings()} className="user-settings-image" src={userSettingsImg} alt="logo" />
+                    <div onClick={() => openUserSettings()} className="user-settings-image">Settings</div>
                 </div>
-                {storesListLoaded && <div className='store-selection-dropdown'>
-                    <div className='dropdown-header' onClick={() => setStoreDropdownOpen(!storeDropdownOpen)}>
-                        <div className='store-item'>
-                            <img src={location} alt="location" className='location-img' />
-                            <li key={currentStore.id}>
-                                <b>{currentStore.name}</b><br></br>
-                                {currentStore.formatted_address}
-                            </li>
-                            <div className={'dropdown-arrow ' + (storeDropdownOpen ? 'open' : '')}></div>
-                        </div>
+                {storesListLoaded &&
+                    <div className='your-stores-list'>
+                        <h3 className='page-header green-text'>Location</h3>
+                        {selectedStores.length > 0 && stores.length > 0 &&
+                            <select onChange={(e) => { changeStore(e.target.value) }}>
+                                {selectedStores.map((store_id) => {
+                                    if (store_id == currentStore.id) {
+                                        return (
+                                            <option value={store_id} selected>{stores.find(store => store.id == store_id).name}</option>
+                                        )
+                                    } else {
+                                        return (
+                                            <option value={store_id}>{stores.find(store => store.id == store_id).name}</option>
+                                        )
+                                    }
+                                })}
+                            </select>
+                        }
                     </div>
-                    <div className={'dropdown-wrapper ' + (storeDropdownOpen ? 'open' : '')}>
-                        <div className={'store-dropdown'}>
-                            {stores.map((store) => {
-                                if (selectedStores.includes(store.id) && store.id != currentStore.id) {
-                                    return (
-                                        <div className='store-item' key={store.id} onClick={() => changeStore(store)}>
-                                            <img src={location} alt="location" className='location-img' />
-                                            <li key={store.id}>
-                                                <b>{store.name}</b><br></br>
-                                                {store.formatted_address}
-                                            </li>
-                                        </div>
-                                    )
-                                }
-                            })}
-                            <div className='store-item empty' onClick={() => openStores()} >Add another store</div>
-                        </div>
-                    </div>
-                </div>}
-                {showUpload && <div className={`dropzone-wrapper ${!storesListLoaded ? 'loading' : ''}`}>
+                }
+                {(showUpload || showOpportunities) && <div className={`dropzone-wrapper ${!storesListLoaded ? 'loading' : ''}`}>
                     {files.length === 0 && !loading && <Dropzone onDrop={acceptedFiles => setFiles(acceptedFiles)}>
                         {({ getRootProps, getInputProps }) => (
-                            <section className='dropzone'>
+                            <button className='dropzone'>
                                 <div {...getRootProps()}>
                                     <input {...getInputProps()} />
-                                    <img src={uploadIcon} alt="upload" />
-                                    <p>Drag & Drop</p>
-                                    <h3>Upload Product Info</h3>
-                                    <p>(.csv file)</p>
+                                    Upload .CSV
                                 </div>
-                            </section>
+                            </button>
                         )}
                     </Dropzone>}
-                    {loading && <div className='loading-wrapper'>
+                </div>}
+                {showUpload && <button className='light-bg mb-30' onClick={() => removeStore(currentStore.id)}>Remove Location</button>}
+                {loading &&
+                    <div className='loading-wrapper'>
                         <div className='loading'></div>
-                    </div>}
-                </div>}
-                {!showUpload && !showOpportunities && <div className='product-opportunities'>
-                    <div className='opportunities-wrapper' onClick={() => setShowOpportunities(true)}>
-                        <div className='opportunities-count'>
-                            {/* Show the number of products where product.regular_price > product.average_price */}
-                            {productResults && productResults.filter(product => product.regular_price > product.average_price).length}
-                        </div>
-                        <div className='opportunities-header'>
-                            Opportunities
-                        </div>
-                        <div className='right-arrow'></div>
                     </div>
-                    {false && <><div className='market-data-wrapper'>
-                        <div className='market-data-header'>Market Data</div>
-                    </div>
-                        <div className='available-deals-wrapper'>
-                            <div className='available-deals-header'>Available Deals</div>
-                        </div></>}
-                </div>}
+                }
                 {showOpportunities && !showUpload &&
                     <div className='product-opportunities'>
-                        <div className='product-opportunities-header'>
-                            <div className='opportunities-header'>Opportunities</div>
-                            <div className='back-btn' onClick={() => setShowOpportunities(false)}>
-                                <div className='left-arrow'></div>
-                                <div>Back</div>
-                            </div>
-                        </div>
+                        <div className='opportunities-header green-text page-header'>Opportunities <span className='no-bold'>({typeof productResults === 'array' ? productResults.length : 0})</span></div>
                         <div className='opportunities-list'>
                             {
                                 productResults.map((product) => {
                                     return (
                                         <div className='opportunity-item' key={product.id}>
                                             <div className='opportunity-name'>{product.product_name}</div>
-                                            <div className='opportunity-brand'><b>Brand:</b> {product.brand}</div>
-                                            <div className='opportunity-price'><b>Your Price:</b> ${product.regular_price}</div>
-                                            <div className='opportunity-price'><b>Average Price:</b> ${product.average_price}</div>
-                                            <div className='opportunity-price'><b>Lowest Price:</b> ${product.lowest_competitor_price}</div>
+                                            <div className='product-info'>{product.category} | {product.brand}</div>
+                                            <div className='opportunity-prices'>
+                                                <div className='opportunity-price'><div className='low-opacity'>Your Price</div><div className={product.regular_price < product.lowest_competitor_price ? 'green-text' : 'red-text'}>${product.regular_price}</div></div>
+                                                <div className='opportunity-price'><div className='low-opacity'>Avg. Price</div> ${product.average_price}</div>
+                                                <div className='opportunity-price'><div className='low-opacity'>Lowest Price</div> ${product.lowest_competitor_price}</div>
+                                            </div>
                                         </div>
                                     )
                                 })
@@ -438,13 +422,16 @@ const ProductInfoUpload = ({ supabase, userSettings, openUserSettings, setSelect
                         </div>
                     </div>
                 }
-                <div className='product-opportunities-footer'>
-                    <div className='last-upload'>
-                        Last Upload: {lastUpload}
-                    </div>
-                    <div className='upload-btn-wrapper' onClick={() => { setShowUpload(true); setShowOpportunities(false) }}>
-                        <div className='upload-btn'>New Upload</div>
-                    </div>
+                <div className='instructions'>
+                    <h3>Instructions</h3>
+                    <p>
+                        Vivamus sagittis lacus vel augue laoreet rutrum
+                        faucibus dolor auctor. Aenean eu leo quam.
+                        Pellentesque ornare sem lacinia quam venenatis
+                        vestibulum. Curabitur blandit tempus porttitor.
+                        Praesent commodo cursus magna, vel scelerisque
+                        nisl consectetur et.
+                    </p>
                 </div>
             </div>
         </>
